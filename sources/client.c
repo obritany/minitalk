@@ -1,67 +1,49 @@
 #include "minitalk.h"
 
-static char	*ft_get_argv(int argc, char **argv)
+void send(char *str, pid_t pid)
 {
-	char	*output;
-	char	*temp1;
-	char	*temp2;
-	int		i;
-
-	i = 2;
-	if (argc == 3)
-		output = ft_strdup(argv[2]);
-	else
-	{
-		output = ft_strdup(argv[2]);
-		while (++i < argc)
-		{
-			temp1 = ft_strjoin(output, " ");
-			temp2 = ft_strjoin(temp1, argv[i]);
-			free(output);
-			output = ft_strdup(temp2);
-			free(temp1);
-			free(temp2);
-		}
-	}
-	return (output);
-}
-
-static void	ft_sender(int ppid, char *message)
-{
-	int	i;
-	int	j;
+	int bit;
+	int i;
 
 	i = 0;
-	while (message[i])
+	while (str[i])
 	{
-		j = 128;
-		while (j > 0)
+		bit = 0b10000000;
+		while (bit > 0)
 		{
-			usleep (50);
-			if (message[i] & j)
-				kill(ppid, SIGUSR1);
+			if (str[i] & bit)
+				kill(pid, SIGUSR2);
 			else
-				kill(ppid, SIGUSR2);
-			j /= 2;
+				kill(pid, SIGUSR1);
+			bit >>= 1;
+			usleep(125);
 		}
-		usleep (50);
 		i++;
 	}
 }
 
-int	main(int argc, char **argv)
+int main(int argc, char **argv)
 {
-	int		ppid;
-	char	*message;
+	pid_t server_pid;
+	int i;
 
 	if (argc < 3)
 	{
-		ft_putendl_fd("Error\nNotenough arguements", 2);
-		exit(1);
+		ft_putstr_fd("Error: Not enough arguments\n", 2);
+		return (1);
 	}
-	ppid = ft_atoi(argv[1]);
-	message = ft_get_argv(argc, argv);
-	ft_sender(ppid, message);
-	free(message);
+	server_pid = ft_atoi(argv[1]);
+	if (!server_pid)
+	{
+		ft_putstr_fd("Error: Wrong PID\n", 2);
+		return (2);
+	}
+	i = 1;
+	while (++i < argc)
+	{
+		send(argv[i], server_pid);
+		if (argc - i > 1)
+			send(" ", server_pid);
+	}
 	return (0);
 }
