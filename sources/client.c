@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   client.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: obritany <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/09/09 14:31:21 by obritany          #+#    #+#             */
+/*   Updated: 2021/09/09 14:31:23 by obritany         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minitalk.h"
 
-void send(char *str, pid_t pid)
+void	send(char *str, pid_t pid)
 {
-	int bit;
-	int i;
+	int	bit;
+	int	i;
 
 	i = 0;
 	while (str[i])
@@ -16,16 +28,16 @@ void send(char *str, pid_t pid)
 			else
 				kill(pid, SIGUSR1);
 			bit >>= 1;
-			usleep(125);
+			usleep(100);
 		}
 		i++;
 	}
 }
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
-	pid_t server_pid;
-	int i;
+	pid_t	server_pid;
+	int		i;
 
 	if (argc < 3)
 	{

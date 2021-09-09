@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   server.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: obritany <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/09/09 14:31:43 by obritany          #+#    #+#             */
+/*   Updated: 2021/09/09 14:31:45 by obritany         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minitalk.h"
 
-void handle_sig(int sig)
+void	handle_sig(int sig)
 {
-	static int symbol = 0b00000000;
-	static int bit = 0b10000000;
+	static int	symbol = 0b00000000;
+	static int	bit = 0b10000000;
 
 	if (sig == SIGUSR1)
 		symbol &= ~bit;
@@ -17,7 +29,7 @@ void handle_sig(int sig)
 	}
 }
 
-int main(void)
+int	main(void)
 {
 	ft_putnbr_fd(getpid(), 1);
 	write(1, "\n", 1);
