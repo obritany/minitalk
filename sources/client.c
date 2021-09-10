@@ -12,9 +12,31 @@
 
 #include "minitalk.h"
 
+void	handle_sig(int sig)
+{
+	(void) sig;
+	// static unsigned char	symbol = 0b00000000;
+	// static unsigned char	bit = 0b10000000;
+
+	// if (sig != SIGUSR1 && sig != SIGUSR2)
+	// 	return ;
+
+	// write(1, ",", 1);
+	// if (sig == SIGUSR1)
+	// 	symbol &= ~bit;
+	// if (sig == SIGUSR2)
+	// 	symbol |= bit;
+	// bit >>= 1;
+	// if (bit == 0)
+	// {
+	// 	write(1, &symbol, 1);
+	// 	bit = 0b10000000;
+	// }
+}
+
 void	send(char *str, pid_t pid)
 {
-	int	bit;
+	unsigned char	bit;
 	int	i;
 
 	i = 0;
@@ -23,12 +45,13 @@ void	send(char *str, pid_t pid)
 		bit = 0b10000000;
 		while (bit > 0)
 		{
+			write(1, ".", 1);
 			if (str[i] & bit)
 				kill(pid, SIGUSR2);
 			else
 				kill(pid, SIGUSR1);
 			bit >>= 1;
-			usleep(100);
+			pause();
 		}
 		i++;
 	}
@@ -50,6 +73,8 @@ int	main(int argc, char **argv)
 		ft_putstr_fd("Error: Wrong PID\n", 2);
 		return (2);
 	}
+	signal(SIGUSR1, &handle_sig);
+	signal(SIGUSR2, &handle_sig);
 	i = 1;
 	while (++i < argc)
 	{
