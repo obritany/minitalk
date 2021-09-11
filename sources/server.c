@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "minitalk.h"
-#include "stdio.h"
 
 void	handle_sig(int sig, siginfo_t *siginfo, void *context)
 {
@@ -19,9 +18,8 @@ void	handle_sig(int sig, siginfo_t *siginfo, void *context)
 	static unsigned char	bit = 0b10000000;
 	(void) context;
 
-	write(1, ".", 1);
-	printf("%d", siginfo->si_pid);
-	fflush(stdout);
+	if (siginfo->si_pid <= 0)
+		return ;
 	if (sig == SIGUSR1)
 		symbol &= ~bit;
 	if (sig == SIGUSR2)
@@ -33,15 +31,16 @@ void	handle_sig(int sig, siginfo_t *siginfo, void *context)
 		bit = 0b10000000;
 	}
 	usleep(100);
-	kill(siginfo->si_pid, sig);
+	while (kill(siginfo->si_pid, SIGUSR1));
 }
 
 int	main(void)
 {
 	struct sigaction	act;
 
+	ft_putstr_fd("Server PID: ", 1);
 	ft_putnbr_fd(getpid(), 1);
-	write(1, "\n", 1);
+	ft_putstr_fd("\n", 1);
 	act.sa_sigaction = &handle_sig;
 	act.sa_flags = SA_SIGINFO;
 	sigaction(SIGUSR1, &act, NULL);
