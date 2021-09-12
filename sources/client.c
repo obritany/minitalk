@@ -12,7 +12,7 @@
 
 #include "minitalk.h"
 
-int g_sig = 0;
+int	g_sig = 0;
 
 void	handle_sig(int sig)
 {
@@ -22,7 +22,7 @@ void	handle_sig(int sig)
 void	send(char *str, pid_t pid)
 {
 	unsigned char	bit;
-	int	i;
+	int				i;
 
 	i = 0;
 	while (str[i])
@@ -35,9 +35,9 @@ void	send(char *str, pid_t pid)
 			else
 				kill(pid, SIGUSR1);
 			usleep(10000);
-			usleep(25);
+			usleep(50);
 			if (!g_sig)
-				continue;
+				continue ;
 			g_sig = 0;
 			bit >>= 1;
 		}

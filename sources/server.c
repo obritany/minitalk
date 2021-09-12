@@ -16,8 +16,8 @@ void	handle_sig(int sig, siginfo_t *siginfo, void *context)
 {
 	static unsigned char	symbol = 0b00000000;
 	static unsigned char	bit = 0b10000000;
-	(void) context;
 
+	(void) context;
 	if (siginfo->si_pid <= 0)
 		return ;
 	if (sig == SIGUSR1)
@@ -31,7 +31,8 @@ void	handle_sig(int sig, siginfo_t *siginfo, void *context)
 		bit = 0b10000000;
 	}
 	usleep(100);
-	while (kill(siginfo->si_pid, SIGUSR1));
+	while (kill(siginfo->si_pid, SIGUSR1))
+		;
 }
 
 int	main(void)
